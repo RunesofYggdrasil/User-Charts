@@ -8,15 +8,37 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model Character {
-  id         Int       @id @default(autoincrement())
-  firstName  String    @map("first_name")
-  lastName   String    @map("last_name")
-  age        Int
-  pairingOne Pairing[] @relation(name: "CharacterOne")
-  pairingTwo Pairing[] @relation(name: "CharacterTwo")
+model User {
+  id       Int     @id @default(autoincrement())
+  username String
+  password String
+  charts   Chart[]
 
-  @@unique(name: "fullName", [firstName, lastName])
+  @@map("users")
+}
+
+model Chart {
+  id         Int         @id @default(autoincrement())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int
+  type       ChartType   @default(Square)
+  characters Character[]
+  pairings   Pairing[]
+  reltypes   RelType[]
+
+  @@map("charts")
+}
+
+model Character {
+  id          Int       @id @default(autoincrement())
+  firstName   String    @map("first_name")
+  lastName    String    @map("last_name")
+  age         Int
+  chart       Chart     @relation(fields: [chartId], references: [id])
+  chartId     Int
+  pairingsOne Pairing[] @relation(name: "CharacterOne")
+  pairingsTwo Pairing[] @relation(name: "CharacterTwo")
+
   @@map("characters")
 }
 
@@ -29,14 +51,25 @@ model Pairing {
   characterTwoId Int
   permitted      Boolean   @default(true)
   relValues      Int[]
+  chart          Chart     @relation(fields: [chartId], references: [id])
+  chartId        Int
 
   @@map("pairings")
 }
 
 model RelType {
   id      Int    @id @default(autoincrement())
-  name    String @unique
-  hexCode String @unique @map("hex_code") @db.VarChar(6)
+  name    String
+  hexCode String @map("hex_code") @db.VarChar(6)
+  chart   Chart  @relation(fields: [chartId], references: [id])
+  chartId Int
 
   @@map("rel_types")
+}
+
+enum ChartType {
+  Circle
+  Square
+
+  @@map("chart_type_enum")
 }
