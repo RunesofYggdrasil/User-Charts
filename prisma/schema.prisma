@@ -9,13 +9,28 @@ datasource db {
 }
 
 model Character {
-  id        Int    @id @default(autoincrement())
-  firstName String @map("first_name")
-  lastName  String @map("last_name")
-  age       Int
+  id         Int       @id @default(autoincrement())
+  firstName  String    @map("first_name")
+  lastName   String    @map("last_name")
+  age        Int
+  pairingOne Pairing[] @relation(name: "CharacterOne")
+  pairingTwo Pairing[] @relation(name: "CharacterTwo")
 
   @@unique(name: "fullName", [firstName, lastName])
   @@map("characters")
+}
+
+model Pairing {
+  id             Int       @id @default(autoincrement())
+  name           String
+  characterOne   Character @relation(name: "CharacterOne", fields: [characterOneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  characterOneId Int
+  characterTwo   Character @relation(name: "CharacterTwo", fields: [characterTwoId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  characterTwoId Int
+  permitted      Boolean   @default(true)
+  relValues      Int[]
+
+  @@map("pairings")
 }
 
 model RelType {
