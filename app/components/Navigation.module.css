@@ -1,0 +1,4 @@
+.navigationOutside {
+  width: var(--page-width);
+  background-color: aqua;
+}
