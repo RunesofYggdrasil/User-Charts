@@ -1,5 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/prisma/prisma";
+import bcrypt from "bcrypt";
 
 export async function GET(request: NextRequest) {
-  return NextResponse.json({ test: "a" }, { status: 200 });
+  try {
+    const users = await prisma.user.findMany();
+    return NextResponse.json({ users }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 400 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const response = await request.json();
+    const hashedPassword = await bcrypt.hash(response.password, 10);
+    const user = await prisma.user.create({
+      data: {
+        username: response.username,
+        password: hashedPassword,
+      },
+    });
+    return NextResponse.json({ user }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 400 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const users = await prisma.user.deleteMany();
+    return NextResponse.json({ users }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 400 });
+  }
 }
