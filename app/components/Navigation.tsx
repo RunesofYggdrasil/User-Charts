@@ -42,13 +42,13 @@ const Navigation = () => {
               <Link href="./">HOME</Link>
             </li>
             <li>
-              <Link href="./">HOME</Link>
+              <Link href="./">SEARCH</Link>
             </li>
             <li>
-              <Link href="./">HOME</Link>
+              <Link href="./">CHARTS</Link>
             </li>
             <li>
-              <Link href="./">HOME</Link>
+              <Link href="./">PROFILE</Link>
             </li>
           </ul>
         </div>
