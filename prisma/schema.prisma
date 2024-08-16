@@ -60,6 +60,7 @@ model Pairing {
 
 model RelType {
   id      Int    @id @default(autoincrement())
+  index   Int
   name    String
   hexCode String @map("hex_code") @db.VarChar(6)
   chart   Chart  @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
