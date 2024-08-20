@@ -24,6 +24,17 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
+
+    const relValues = await prisma.relValue.findMany();
+    relValues.forEach(async (relValue) => {
+      const relValuesForPairing = await prisma.relValuesForPairings.create({
+        data: {
+          pairingId: pairing.id,
+          relValId: relValue.id,
+        },
+      });
+    });
+
     return NextResponse.json({ pairing }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });

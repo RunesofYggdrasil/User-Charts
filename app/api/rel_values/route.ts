@@ -20,6 +20,17 @@ export async function POST(request: NextRequest) {
         value: 0,
       },
     });
+
+    const pairings = await prisma.pairing.findMany();
+    pairings.forEach(async (pairing) => {
+      const relValuesForPairing = await prisma.relValuesForPairings.create({
+        data: {
+          pairingId: pairing.id,
+          relValId: relValue.id,
+        },
+      });
+    });
+
     return NextResponse.json({ relValue }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
