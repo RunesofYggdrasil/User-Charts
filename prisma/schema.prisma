@@ -22,7 +22,7 @@ model Chart {
   user       User        @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId     Int
   publicity  Boolean     @default(false)
-  chartType  ChartType   @map("chart_type") @default(Square)
+  chartType  ChartType   @default(Square) @map("chart_type")
   characters Character[]
   pairings   Pairing[]
   reltypes   RelType[]
@@ -44,47 +44,47 @@ model Character {
 }
 
 model Pairing {
-  id             Int       @id @default(autoincrement())
+  id             Int                    @id @default(autoincrement())
   name           String
-  characterOne   Character @relation(name: "CharacterOne", fields: [characterOneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  characterOne   Character              @relation(name: "CharacterOne", fields: [characterOneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   characterOneId Int
-  characterTwo   Character @relation(name: "CharacterTwo", fields: [characterTwoId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  characterTwo   Character              @relation(name: "CharacterTwo", fields: [characterTwoId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   characterTwoId Int
-  permitted      Boolean   @default(true)
+  permitted      Boolean                @default(true)
   relValues      RelValuesForPairings[]
-  chart          Chart     @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  chart          Chart                  @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId        Int
 
   @@map("pairings")
 }
 
 model RelType {
-  id      Int    @id @default(autoincrement())
-  name    String
-  hexCode String @map("hex_code") @db.VarChar(6)
-  chart   Chart  @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  chartId Int
+  id        Int        @id @default(autoincrement())
+  name      String
+  hexCode   String     @map("hex_code") @db.VarChar(6)
+  chart     Chart      @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  chartId   Int
   relValues RelValue[]
 
   @@map("rel_types")
 }
 
 model RelValue {
-  id      Int     @id @default(autoincrement())
-  relType RelType @relation(fields: [relId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  relId   Int
-  value   Int
+  id       Int                    @id @default(autoincrement())
+  relType  RelType                @relation(fields: [relId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  relId    Int
+  value    Int
   pairings RelValuesForPairings[]
 
   @@map("rel_values")
 }
 
 model RelValuesForPairings {
-  id      Int     @id @default(autoincrement())
-  pairing Pairing @relation(fields: [pairingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  pairing   Pairing  @relation(fields: [pairingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   pairingId Int
-  relValue RelValue @relation(fields: [relValId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  relValId Int
+  relValue  RelValue @relation(fields: [relValId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  relValId  Int
 
   @@map("rel_values_for_pairings")
 }
