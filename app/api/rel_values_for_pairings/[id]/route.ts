@@ -7,12 +7,13 @@ export async function GET(
 ) {
   try {
     const id = Number.parseInt(params.id);
-    const relType = await prisma.relType.findFirstOrThrow({
-      where: {
-        id,
-      },
-    });
-    return NextResponse.json({ relType }, { status: 200 });
+    const relValuesForPairings =
+      await prisma.relValuesForPairings.findFirstOrThrow({
+        where: {
+          id,
+        },
+      });
+    return NextResponse.json({ relValuesForPairings }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
@@ -25,17 +26,16 @@ export async function PUT(
   try {
     const id = Number.parseInt(params.id);
     const response = await request.json();
-    const relType = await prisma.relType.update({
+    const relValuesForPairings = await prisma.relValuesForPairings.update({
       data: {
-        name: response.name,
-        hexCode: response.hexCode,
-        chartId: response.chartId,
+        pairingId: response.pairingId,
+        relValId: response.relValId,
       },
       where: {
         id,
       },
     });
-    return NextResponse.json({ relType }, { status: 200 });
+    return NextResponse.json({ relValuesForPairings }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
@@ -47,12 +47,12 @@ export async function DELETE(
 ) {
   try {
     const id = Number.parseInt(params.id);
-    const relType = await prisma.relType.delete({
+    const relValuesForPairings = await prisma.relValuesForPairings.delete({
       where: {
         id,
       },
     });
-    return NextResponse.json({ relType }, { status: 200 });
+    return NextResponse.json({ relValuesForPairings }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }

@@ -51,7 +51,7 @@ model Pairing {
   characterTwo   Character @relation(name: "CharacterTwo", fields: [characterTwoId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   characterTwoId Int
   permitted      Boolean   @default(true)
-  relValues      Int[]
+  relValues      RelValuesForPairings[]
   chart          Chart     @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId        Int
 
@@ -60,13 +60,33 @@ model Pairing {
 
 model RelType {
   id      Int    @id @default(autoincrement())
-  index   Int
   name    String
   hexCode String @map("hex_code") @db.VarChar(6)
   chart   Chart  @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId Int
+  relValues RelValue[]
 
   @@map("rel_types")
+}
+
+model RelValue {
+  id      Int     @id @default(autoincrement())
+  relType RelType @relation(fields: [relId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  relId   Int
+  value   Int
+  pairings RelValuesForPairings[]
+
+  @@map("rel_values")
+}
+
+model RelValuesForPairings {
+  id      Int     @id @default(autoincrement())
+  pairing Pairing @relation(fields: [pairingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  pairingId Int
+  relValue RelValue @relation(fields: [relValId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  relValId Int
+
+  @@map("rel_values_for_pairings")
 }
 
 enum ChartType {

@@ -14,9 +14,24 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const response = await request.json();
+
+    let relIndex = 0;
+    const reltypes = await prisma.relType.findMany();
+    for (let relIndex = 0; relIndex < reltypes.length; relIndex++) {
+      try {
+        const index = await prisma.relType.findFirstOrThrow({
+          where: {
+            id: relIndex,
+          },
+        });
+      } catch (error) {
+        relIndex--;
+        break;
+      }
+    }
+
     const relType = await prisma.relType.create({
       data: {
-        index: response.index,
         name: response.name,
         hexCode: response.hexCode,
         chartId: response.chartId,
