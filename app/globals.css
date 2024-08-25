@@ -4,16 +4,29 @@
 
 :root {
   --page-width: calc(100vw - 16px);
+  --color-primary: #e9e1fd;
+  --color-secondary: #cfc7fe;
+  --color-accent: #a09dff;
+  --text-primary: #1f1f1f;
+  --text-accent: #4200ad;
 }
 
 @media (prefers-color-scheme: dark) {
-  /* do smth here */
+  :root {
+    --color-primary: #10052a;
+    --color-secondary: #1e1060;
+    --color-accent: #231f8b;
+    --text-primary: #dfdfdf;
+    --text-accent: #b485ff;
+  }
 }
 
 body {
   margin: 8px;
   overflow-y: scroll;
   scrollbar-gutter: stable;
+  background-color: var(--color-primary);
+  color: var(--text-primary);
 }
 
 @layer utilities {

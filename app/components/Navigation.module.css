@@ -1,4 +1,35 @@
 .navigationOutside {
   width: var(--page-width);
-  background-color: aqua;
+  height: 100px;
+  margin: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 4px solid var(--color-accent);
+  border-radius: 10px;
+  background-color: var(--color-secondary);
+  color: var(--text-primary);
+}
+.navigationInside {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  height: 72px;
+  line-height: 72px;
+  position: relative;
+}
+.navigationLeft {
+  position: absolute;
+  left: 20px;
+}
+.navigationRight {
+  position: absolute;
+  right: 20px;
+}
+.navigationRight ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+}
+.navigationRight li {
+  margin-left: 20px;
 }

@@ -36,19 +36,19 @@ const Navigation = () => {
         <div className={styles.navigationLeft}>
           <p>CROWSEE</p>
         </div>
-        <div className={styles.navigationLeft}>
+        <div className={styles.navigationRight}>
           <ul>
             <li>
               <Link href="./">HOME</Link>
             </li>
             <li>
-              <Link href="./">SEARCH</Link>
+              <Link href="./search">SEARCH</Link>
             </li>
             <li>
-              <Link href="./">CHARTS</Link>
+              <Link href="./charts">CHARTS</Link>
             </li>
             <li>
-              <Link href="./">PROFILE</Link>
+              <Link href="./profile">PROFILE</Link>
             </li>
           </ul>
         </div>
