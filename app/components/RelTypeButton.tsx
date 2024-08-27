@@ -4,6 +4,10 @@ import React, { useState } from "react";
 import styles from "./RelTypeButton.module.css";
 
 interface RelTypeProps {
+  position: {
+    x: number;
+    y: number;
+  };
   reltypes: {
     name: string;
     hexCode: string;
@@ -24,12 +28,13 @@ function handleClick(
   return;
 }
 
-const RelTypeButton = ({ reltypes }: RelTypeProps) => {
+const RelTypeButton = ({ position, reltypes }: RelTypeProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   return (
     <button
       type="button"
       className={styles.reltypeButton}
+      id={"x" + position.x + "y" + position.y + "-" + currentIndex}
       onClick={() => {
         handleClick(currentIndex, setCurrentIndex, reltypes.length);
       }}
