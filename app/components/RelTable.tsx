@@ -32,45 +32,48 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
   }
   return (
     <table>
-      <tr>
-        <th>CROWSEE</th>
-        {characters.map((character) => {
+      <tbody>
+        <tr>
+          <th>CROWSEE</th>
+          {characters.map((character) => {
+            return (
+              <th key={"h" + character.id}>
+                {character.firstName} {character.lastName.substring(0, 1)}.
+              </th>
+            );
+          })}
+        </tr>
+        {characters.map((characterTwo, indexTwo) => {
           return (
-            <th key={"h" + character.id}>
-              {character.firstName} {character.lastName.substring(0, 1)}.
-            </th>
+            <tr key={"r" + characterTwo.id}>
+              <th>
+                {characterTwo.firstName} {characterTwo.lastName.substring(0, 1)}
+                .
+              </th>
+              {characters.map((characterOne, indexOne) => {
+                const [currentIndex, setCurrentIndex] =
+                  indexOne >= indexTwo
+                    ? tableButtons[indexTwo][indexOne - indexTwo]
+                    : tableButtons[indexOne][indexTwo - indexOne];
+                return (
+                  <td key={"d" + characterOne.id}>
+                    <RelTypeButton
+                      index={{ currentIndex, setCurrentIndex }}
+                      position={{
+                        x: indexOne,
+                        y: indexTwo,
+                        id1: characterOne.id,
+                        id2: characterTwo.id,
+                      }}
+                      reltypes={reltypes}
+                    />
+                  </td>
+                );
+              })}
+            </tr>
           );
         })}
-      </tr>
-      {characters.map((characterTwo, indexTwo) => {
-        return (
-          <tr key={"r" + characterTwo.id}>
-            <th>
-              {characterTwo.firstName} {characterTwo.lastName.substring(0, 1)}.
-            </th>
-            {characters.map((characterOne, indexOne) => {
-              const [currentIndex, setCurrentIndex] =
-                indexOne >= indexTwo
-                  ? tableButtons[indexTwo][indexOne - indexTwo]
-                  : tableButtons[indexOne][indexTwo - indexOne];
-              return (
-                <td key={"d" + characterOne.id}>
-                  <RelTypeButton
-                    index={{ currentIndex, setCurrentIndex }}
-                    position={{
-                      x: indexOne,
-                      y: indexTwo,
-                      id1: characterOne.id,
-                      id2: characterTwo.id,
-                    }}
-                    reltypes={reltypes}
-                  />
-                </td>
-              );
-            })}
-          </tr>
-        );
-      })}
+      </tbody>
     </table>
   );
 };
