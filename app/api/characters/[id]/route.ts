@@ -29,7 +29,6 @@ export async function PUT(
       data: {
         firstName: response.firstName,
         lastName: response.lastName,
-        age: response.age,
         chartId: response.chartId,
       },
       where: {

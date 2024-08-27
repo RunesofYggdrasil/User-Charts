@@ -34,7 +34,6 @@ model Character {
   id          Int       @id @default(autoincrement())
   firstName   String    @map("first_name")
   lastName    String    @map("last_name")
-  age         Int
   chart       Chart     @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId     Int
   pairingsOne Pairing[] @relation(name: "CharacterOne")

@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
       data: {
         firstName: response.firstName,
         lastName: response.lastName,
-        age: response.age,
         chartId: response.chartId,
       },
     });
