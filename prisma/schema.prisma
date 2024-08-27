@@ -49,7 +49,6 @@ model Pairing {
   characterOneId Int
   characterTwo   Character              @relation(name: "CharacterTwo", fields: [characterTwoId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   characterTwoId Int
-  permitted      Boolean                @default(true)
   relValues      RelValuesForPairings[]
   chart          Chart                  @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId        Int

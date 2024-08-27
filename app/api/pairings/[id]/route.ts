@@ -30,7 +30,6 @@ export async function PUT(
         name: response.name,
         characterOneId: response.characterOneId,
         characterTwoId: response.characterTwoId,
-        permitted: response.permitted,
         relValues: response.relValues,
         chartId: response.chartId,
       },
