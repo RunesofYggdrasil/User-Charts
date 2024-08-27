@@ -1,8 +1,20 @@
+import RelTable from "./components/RelTable";
 import RelTypeButton from "./components/RelTypeButton";
 
 export default function Home() {
   return (
     <>
+      <RelTable
+        characters={[
+          { id: 0, firstName: "John", lastName: "Egbert" },
+          { id: 1, firstName: "Jade", lastName: "Harley" },
+          { id: 3, firstName: "Dave", lastName: "Strider" },
+        ]}
+        reltypes={[
+          { id: 0, name: "Flushed", hexCode: "FF0000", textCode: "000000" },
+          { id: 1, name: "Pitch", hexCode: "000000", textCode: "FFFFFF" },
+        ]}
+      />
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sed
         aliquam rem ipsa incidunt assumenda nemo ad ullam numquam delectus iusto
