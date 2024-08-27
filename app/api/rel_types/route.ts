@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
       data: {
         name: response.name,
         hexCode: response.hexCode,
+        textCode: response.textCode,
         chartId: response.chartId,
       },
     });

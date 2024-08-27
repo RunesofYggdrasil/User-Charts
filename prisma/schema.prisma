@@ -62,6 +62,7 @@ model RelType {
   id        Int        @id @default(autoincrement())
   name      String
   hexCode   String     @map("hex_code") @db.VarChar(6)
+  textCode  String     @map("text_code") @db.VarChar(6)
   chart     Chart      @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId   Int
   relValues RelValue[]

@@ -29,6 +29,7 @@ export async function PUT(
       data: {
         name: response.name,
         hexCode: response.hexCode,
+        textCode: response.textCode,
         chartId: response.chartId,
       },
       where: {
