@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RelTypeButton from "./RelTypeButton";
+import fetchAPI from "../api/fetch";
 
 interface RelTableProps {
   characters: {
@@ -15,6 +16,31 @@ interface RelTableProps {
     hexCode: string;
     textCode: string;
   }[];
+}
+
+type Vote = {
+  reltype: number;
+  characterOneId: number;
+  characterTwoId: number;
+};
+
+function handleSubmitGatherVotes(
+  values: [number, React.Dispatch<React.SetStateAction<number>>][][],
+  characters: { id: number; firstName: string; lastName: string }[]
+): Vote[] {
+  const votes: Vote[] = [];
+  for (let i = 0; i < values.length; i++) {
+    for (let j = 0; j < values[i].length; j++) {
+      const [reltype, setReltype] = values[i][j];
+      const vote: Vote = {
+        reltype,
+        characterOneId: characters[i].id,
+        characterTwoId: characters[i + j].id,
+      };
+      votes.push(vote);
+    }
+  }
+  return votes;
 }
 
 const RelTable = ({ characters, reltypes }: RelTableProps) => {
@@ -31,50 +57,72 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
     tableButtons.push(tableButtonsRow);
   }
   return (
-    <table>
-      <tbody>
-        <tr>
-          <th>CROWSEE</th>
-          {characters.map((character) => {
+    <>
+      <table>
+        <tbody>
+          <tr>
+            <th>CROWSEE</th>
+            {characters.map((character) => {
+              return (
+                <th key={"h" + character.id}>
+                  {character.firstName} {character.lastName.substring(0, 1)}.
+                </th>
+              );
+            })}
+          </tr>
+          {characters.map((characterTwo, indexTwo) => {
             return (
-              <th key={"h" + character.id}>
-                {character.firstName} {character.lastName.substring(0, 1)}.
-              </th>
+              <tr key={"r" + characterTwo.id}>
+                <th>
+                  {characterTwo.firstName}{" "}
+                  {characterTwo.lastName.substring(0, 1)}.
+                </th>
+                {characters.map((characterOne, indexOne) => {
+                  const [currentIndex, setCurrentIndex] =
+                    indexOne >= indexTwo
+                      ? tableButtons[indexTwo][indexOne - indexTwo]
+                      : tableButtons[indexOne][indexTwo - indexOne];
+                  return (
+                    <td key={"d" + characterOne.id}>
+                      <RelTypeButton
+                        index={{ currentIndex, setCurrentIndex }}
+                        position={{
+                          x: indexOne,
+                          y: indexTwo,
+                          id1: characterOne.id,
+                          id2: characterTwo.id,
+                        }}
+                        reltypes={reltypes}
+                      />
+                    </td>
+                  );
+                })}
+              </tr>
             );
           })}
-        </tr>
-        {characters.map((characterTwo, indexTwo) => {
-          return (
-            <tr key={"r" + characterTwo.id}>
-              <th>
-                {characterTwo.firstName} {characterTwo.lastName.substring(0, 1)}
-                .
-              </th>
-              {characters.map((characterOne, indexOne) => {
-                const [currentIndex, setCurrentIndex] =
-                  indexOne >= indexTwo
-                    ? tableButtons[indexTwo][indexOne - indexTwo]
-                    : tableButtons[indexOne][indexTwo - indexOne];
-                return (
-                  <td key={"d" + characterOne.id}>
-                    <RelTypeButton
-                      index={{ currentIndex, setCurrentIndex }}
-                      position={{
-                        x: indexOne,
-                        y: indexTwo,
-                        id1: characterOne.id,
-                        id2: characterTwo.id,
-                      }}
-                      reltypes={reltypes}
-                    />
-                  </td>
-                );
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+      <button
+        type="submit"
+        onClick={() => {
+          const votes = handleSubmitGatherVotes(tableButtons, characters);
+          useEffect(() => {
+            const postVoteCall = async () => {
+              const postVoteBody = JSON.stringify({ votes });
+              const postVoteRequest = await fetchAPI(
+                "PUT",
+                "votes",
+                postVoteBody
+              );
+            };
+
+            postVoteCall();
+          });
+        }}
+      >
+        SUBMIT
+      </button>
+    </>
   );
 };
 
