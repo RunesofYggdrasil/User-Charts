@@ -24,12 +24,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const relValues = await prisma.relValue.findMany();
-    relValues.forEach(async (relValue) => {
+    const reltypes = await prisma.relType.findMany();
+    reltypes.forEach(async (reltype) => {
       const relValuesForPairing = await prisma.relValuesForPairings.create({
         data: {
+          value: 0,
           pairingId: pairing.id,
-          relValId: relValue.id,
+          reltypeId: reltype.id,
         },
       });
     });

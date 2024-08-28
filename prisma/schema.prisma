@@ -57,33 +57,24 @@ model Pairing {
 }
 
 model RelType {
-  id        Int        @id @default(autoincrement())
+  id        Int                    @id @default(autoincrement())
   name      String
-  hexCode   String     @map("hex_code") @db.VarChar(6)
-  textCode  String     @map("text_code") @db.VarChar(6)
-  chart     Chart      @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  hexCode   String                 @map("hex_code") @db.VarChar(6)
+  textCode  String                 @map("text_code") @db.VarChar(6)
+  chart     Chart                  @relation(fields: [chartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   chartId   Int
-  relValues RelValue[]
+  relValues RelValuesForPairings[]
 
   @@map("rel_types")
 }
 
-model RelValue {
-  id       Int                    @id @default(autoincrement())
-  relType  RelType                @relation(fields: [relId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  relId    Int
-  value    Int
-  pairings RelValuesForPairings[]
-
-  @@map("rel_values")
-}
-
 model RelValuesForPairings {
-  id        Int      @id @default(autoincrement())
-  pairing   Pairing  @relation(fields: [pairingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  id        Int     @id @default(autoincrement())
+  value     Int
+  pairing   Pairing @relation(fields: [pairingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   pairingId Int
-  relValue  RelValue @relation(fields: [relValId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  relValId  Int
+  reltype   RelType @relation(fields: [reltypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  reltypeId Int
 
   @@map("rel_values_for_pairings")
 }

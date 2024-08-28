@@ -16,8 +16,9 @@ export async function POST(request: NextRequest) {
     const response = await request.json();
     const relValuesForPairings = await prisma.relValuesForPairings.create({
       data: {
+        value: 0,
         pairingId: response.pairingId,
-        relValId: response.relValId,
+        reltypeId: response.reltypeId,
       },
     });
     return NextResponse.json({ relValuesForPairings }, { status: 200 });

@@ -28,8 +28,9 @@ export async function PUT(
     const response = await request.json();
     const relValuesForPairings = await prisma.relValuesForPairings.update({
       data: {
+        value: 0,
         pairingId: response.pairingId,
-        relValId: response.relValId,
+        reltypeId: response.reltypeId,
       },
       where: {
         id,
