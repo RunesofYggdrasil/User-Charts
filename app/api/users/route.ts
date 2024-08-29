@@ -14,6 +14,27 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const response = await request.json();
+    if (response.username.length < 8) {
+      return NextResponse.json(
+        { message: "Username must be at least 8 characters." },
+        { status: 400 }
+      );
+    } else if (response.username.length > 32) {
+      return NextResponse.json(
+        { message: "Username must be at most 32 characters." },
+        { status: 400 }
+      );
+    } else if (response.password.length < 8) {
+      return NextResponse.json(
+        { message: "Password must be at least 8 characters." },
+        { status: 400 }
+      );
+    } else if (response.password.length > 32) {
+      return NextResponse.json(
+        { message: "Password must be at most 32 characters." },
+        { status: 400 }
+      );
+    }
     const hashedPassword = await bcrypt.hash(response.password, 10);
     try {
       const userExists = await prisma.user.findFirstOrThrow({
@@ -23,7 +44,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json(
         { message: "User with this username already exists." },
-        { status: 409 }
+        { status: 400 }
       );
     } catch (error) {
       const user = await prisma.user.create({
