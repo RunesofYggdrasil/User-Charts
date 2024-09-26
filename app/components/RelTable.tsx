@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import RelTypeButton from "./RelTypeButton";
 import fetchAPI from "../api/fetch";
 import Loading from "./Loading";
@@ -48,6 +48,15 @@ function handleSubmitGatherVotes(
   return votes;
 }
 
+async function onSubmit(
+  postVoteBody: string,
+  event: FormEvent<HTMLFormElement>
+) {
+  event.preventDefault();
+
+  const postVoteRequest = await fetchAPI("PUT", "votes", postVoteBody);
+}
+
 const RelTable = ({ characters, reltypes }: RelTableProps) => {
   if (characters && reltypes) {
     const tableButtons: [
@@ -64,60 +73,60 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
     }
     return (
       <>
-        <table>
-          <tbody>
-            <tr>
-              <th>CROWSEE</th>
-              {characters.map((character) => {
-                return (
-                  <th key={"h" + character.id}>
-                    {character.firstName} {character.lastName.substring(0, 1)}.
-                  </th>
-                );
-              })}
-            </tr>
-            {characters.map((characterTwo, indexTwo) => {
-              return (
-                <tr key={"r" + characterTwo.id}>
-                  <th>
-                    {characterTwo.firstName}{" "}
-                    {characterTwo.lastName.substring(0, 1)}.
-                  </th>
-                  {characters.map((characterOne, indexOne) => {
-                    const [currentIndex, setCurrentIndex] =
-                      indexOne >= indexTwo
-                        ? tableButtons[indexTwo][indexOne - indexTwo]
-                        : tableButtons[indexOne][indexTwo - indexOne];
-                    return (
-                      <td key={"d" + characterOne.id}>
-                        <RelTypeButton
-                          index={{ currentIndex, setCurrentIndex }}
-                          position={{
-                            x: indexOne,
-                            y: indexTwo,
-                            id1: characterOne.id,
-                            id2: characterTwo.id,
-                          }}
-                          reltypes={reltypes}
-                        />
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <button
-          type="submit"
-          onClick={() => {
+        <form
+          onSubmit={(event) => {
             const votes = handleSubmitGatherVotes(tableButtons, characters);
             const postVoteBody = JSON.stringify({ votes });
-            const postVoteRequest = fetchAPI("PUT", "votes", postVoteBody);
+            onSubmit(postVoteBody, event);
           }}
         >
-          SUBMIT
-        </button>
+          <table>
+            <tbody>
+              <tr>
+                <th>CROWSEE</th>
+                {characters.map((character) => {
+                  return (
+                    <th key={"h" + character.id}>
+                      {character.firstName} {character.lastName.substring(0, 1)}
+                      .
+                    </th>
+                  );
+                })}
+              </tr>
+              {characters.map((characterTwo, indexTwo) => {
+                return (
+                  <tr key={"r" + characterTwo.id}>
+                    <th>
+                      {characterTwo.firstName}{" "}
+                      {characterTwo.lastName.substring(0, 1)}.
+                    </th>
+                    {characters.map((characterOne, indexOne) => {
+                      const [currentIndex, setCurrentIndex] =
+                        indexOne >= indexTwo
+                          ? tableButtons[indexTwo][indexOne - indexTwo]
+                          : tableButtons[indexOne][indexTwo - indexOne];
+                      return (
+                        <td key={"d" + characterOne.id}>
+                          <RelTypeButton
+                            index={{ currentIndex, setCurrentIndex }}
+                            position={{
+                              x: indexOne,
+                              y: indexTwo,
+                              id1: characterOne.id,
+                              id2: characterTwo.id,
+                            }}
+                            reltypes={reltypes}
+                          />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <button type="submit">SUBMIT</button>
+        </form>
       </>
     );
   } else {
