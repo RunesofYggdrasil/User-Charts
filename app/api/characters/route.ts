@@ -29,18 +29,22 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-    characters.forEach(async (chara) => {
-      const pairing = await prisma.pairing.create({
-        data: {
-          name: chara.firstName + character.firstName,
-          characterOneId: chara.id,
-          characterTwoId: character.id,
-          chartId: response.chartId,
-        },
+    const complete = new Promise((resolve) => {
+      characters.forEach(async (chara, index, array) => {
+        const pairing = await prisma.pairing.create({
+          data: {
+            name: chara.firstName + character.firstName,
+            characterOneId: chara.id,
+            characterTwoId: character.id,
+            chartId: response.chartId,
+          },
+        });
+        pairings.push(pairing);
+        if (index == array.length - 1) {
+          resolve(true);
+        }
       });
-      pairings.push(pairing);
     });
-    const complete = pairings.length > 0;
     return NextResponse.json(
       { character, pairings, complete },
       { status: 200 }
