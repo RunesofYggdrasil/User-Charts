@@ -6,27 +6,31 @@ export async function PUT(request: NextRequest) {
     const response = await request.json();
     const votes = response.votes;
     for (let vote = 0; vote < votes.length; vote++) {
-      const pairing = await prisma.pairing.findFirstOrThrow({
-        where: {
-          characterOneId: votes[vote].characterOneId,
-          characterTwoId: votes[vote].characterTwoId,
-        },
-      });
-      const relValueForPairing =
-        await prisma.relValuesForPairings.findFirstOrThrow({
+      try {
+        const pairing = await prisma.pairing.findFirstOrThrow({
           where: {
-            pairingId: pairing.id,
-            reltypeId: votes[vote].reltypeId,
+            characterOneId: votes[vote].characterOneId,
+            characterTwoId: votes[vote].characterTwoId,
           },
         });
-      const relValueForPairings = await prisma.relValuesForPairings.update({
-        data: {
-          value: relValueForPairing.value + 1,
-        },
-        where: {
-          id: relValueForPairing.id,
-        },
-      });
+        const relValueForPairing =
+          await prisma.relValuesForPairings.findFirstOrThrow({
+            where: {
+              pairingId: pairing.id,
+              reltypeId: votes[vote].reltypeId,
+            },
+          });
+        const relValueForPairings = await prisma.relValuesForPairings.update({
+          data: {
+            value: relValueForPairing.value + 1,
+          },
+          where: {
+            id: relValueForPairing.id,
+          },
+        });
+      } catch (error) {
+        console.log("No Ship Selected for Pairing");
+      }
     }
     return NextResponse.json({ response: "Success" }, { status: 200 });
   } catch (error) {
