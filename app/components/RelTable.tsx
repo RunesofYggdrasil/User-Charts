@@ -4,6 +4,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import RelTypeButton from "./RelTypeButton";
 import fetchAPI from "../api/fetch";
 import Loading from "./Loading";
+import { handleSubmit } from "@/lib/actions";
 
 interface RelTableProps {
   characters:
@@ -24,13 +25,14 @@ interface RelTableProps {
 }
 
 type Vote = {
-  reltype: number;
+  reltypeId: number;
   characterOneId: number;
   characterTwoId: number;
 };
 
 function handleSubmitGatherVotes(
   values: [number, React.Dispatch<React.SetStateAction<number>>][][],
+  reltypes: { id: number; name: string; hexCode: string; textCode: string }[],
   characters: { id: number; firstName: string; lastName: string }[]
 ): Vote[] {
   const votes: Vote[] = [];
@@ -38,7 +40,7 @@ function handleSubmitGatherVotes(
     for (let j = 0; j < values[i].length; j++) {
       const reltype = values[i][j][0];
       const vote: Vote = {
-        reltype,
+        reltypeId: reltypes[reltype].id,
         characterOneId: characters[i].id,
         characterTwoId: characters[i + j].id,
       };
@@ -46,15 +48,6 @@ function handleSubmitGatherVotes(
     }
   }
   return votes;
-}
-
-async function onSubmit(
-  postVoteBody: string,
-  event: FormEvent<HTMLFormElement>
-) {
-  event.preventDefault();
-
-  const postVoteRequest = await fetchAPI("PUT", "votes", postVoteBody);
 }
 
 const RelTable = ({ characters, reltypes }: RelTableProps) => {
@@ -71,15 +64,10 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
       }
       tableButtons.push(tableButtonsRow);
     }
+    const [postVoteBody, setPostVoteBody] = useState("");
     return (
       <>
-        <form
-          onSubmit={(event) => {
-            const votes = handleSubmitGatherVotes(tableButtons, characters);
-            const postVoteBody = JSON.stringify({ votes });
-            onSubmit(postVoteBody, event);
-          }}
-        >
+        <form action={handleSubmit}>
           <table>
             <tbody>
               <tr>
@@ -125,7 +113,20 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
               })}
             </tbody>
           </table>
-          <button type="submit">SUBMIT</button>
+          <input type="hidden" value={postVoteBody} name="postVoteBody" />
+          <button
+            type="submit"
+            onClick={() => {
+              const votes = handleSubmitGatherVotes(
+                tableButtons,
+                reltypes,
+                characters
+              );
+              setPostVoteBody(JSON.stringify({ votes }));
+            }}
+          >
+            SUBMIT
+          </button>
         </form>
       </>
     );

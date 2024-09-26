@@ -16,7 +16,7 @@ export async function PUT(request: NextRequest) {
         await prisma.relValuesForPairings.findFirstOrThrow({
           where: {
             pairingId: pairing.id,
-            reltypeId: votes[vote].reltype,
+            reltypeId: votes[vote].reltypeId,
           },
         });
       const relValueForPairings = await prisma.relValuesForPairings.update({
