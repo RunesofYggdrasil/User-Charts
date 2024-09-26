@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
         name: response.name,
         characterOneId: response.characterOneId,
         characterTwoId: response.characterTwoId,
-        relValues: response.relValues,
         chartId: response.chartId,
       },
     });

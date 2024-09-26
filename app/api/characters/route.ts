@@ -21,6 +21,22 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
+
+    const characters = await prisma.character.findMany({
+      where: {
+        chartId: response.chartId,
+      },
+    });
+    characters.forEach(async (chara) => {
+      const pairing = await prisma.pairing.create({
+        data: {
+          name: chara.firstName + character.firstName,
+          characterOneId: chara.id,
+          characterTwoId: character.id,
+          chartId: response.chartId,
+        },
+      });
+    });
     return NextResponse.json({ character }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });

@@ -23,7 +23,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const pairings = await prisma.pairing.findMany();
+    const pairings = await prisma.pairing.findMany({
+      where: {
+        chartId: response.chartId,
+      },
+    });
     pairings.forEach(async (pairing) => {
       const relValuesForPairing = await prisma.relValuesForPairings.create({
         data: {
