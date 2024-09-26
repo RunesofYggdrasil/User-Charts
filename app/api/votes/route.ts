@@ -37,3 +37,16 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error }, { status: 400 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const relValueForPairings = await prisma.relValuesForPairings.updateMany({
+      data: {
+        value: 0,
+      },
+    });
+    return NextResponse.json({ relValueForPairings }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 400 });
+  }
+}
