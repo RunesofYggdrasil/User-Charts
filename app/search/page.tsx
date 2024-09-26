@@ -1,4 +1,4 @@
-export default function Home() {
+export default function Search() {
   return (
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sed aliquam

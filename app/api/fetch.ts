@@ -5,23 +5,19 @@ export default async function fetchAPI(
 ) {
   try {
     if (fetchMethod == "GET") {
-      const response = await fetch(
-        "https://user-charts.vercel.app/api/" + fetchRoute,
-        { cache: "no-store" }
-      );
+      const response = await fetch(process.env.AUTH_URL + "api/" + fetchRoute, {
+        cache: "no-store",
+      });
       const data = await response.json();
       return data;
     } else {
-      const response = await fetch(
-        "https://user-charts.vercel.app/api/" + fetchRoute,
-        {
-          method: fetchMethod,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: fetchBody,
-        }
-      );
+      const response = await fetch(process.env.AUTH_URL + "api/" + fetchRoute, {
+        method: fetchMethod,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: fetchBody,
+      });
       const data = await response.json();
       return data;
     }

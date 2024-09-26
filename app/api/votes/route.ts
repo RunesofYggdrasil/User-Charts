@@ -21,7 +21,7 @@ export async function PUT(request: NextRequest) {
         });
       const relValueForPairings = await prisma.relValuesForPairings.update({
         data: {
-          value: 0,
+          value: relValueForPairing.value + 1,
         },
         where: {
           id: relValueForPairing.id,
