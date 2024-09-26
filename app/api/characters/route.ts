@@ -27,6 +27,8 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
+    console.log(characters);
+    console.log(JSON.stringify(characters));
     if (characters.length > 0) {
       characters.forEach(async (chara) => {
         const pairing = await prisma.pairing.create({
