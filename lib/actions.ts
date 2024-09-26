@@ -12,6 +12,5 @@ export async function handleSubmit(formData: FormData) {
   ) {
     const postVoteBody = rawFormData.rawPostVoteBody;
     const postVoteRequest = await fetchAPI("PUT", "votes", postVoteBody);
-    console.log(postVoteBody);
   }
 }

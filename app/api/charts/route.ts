@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         name: "None",
         hexCode: "#888888",
         textCode: "#000000",
-        chartId: response.chartId,
+        chartId: chart.id,
       },
     });
     return NextResponse.json({ chart }, { status: 200 });
