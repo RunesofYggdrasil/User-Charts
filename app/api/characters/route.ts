@@ -27,17 +27,23 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-    characters.forEach(async (chara) => {
-      const pairing = await prisma.pairing.create({
-        data: {
-          name: chara.firstName + character.firstName,
-          characterOneId: chara.id,
-          characterTwoId: character.id,
-          chartId: response.chartId,
-        },
+
+    let respons = "";
+    if (!characters) {
+      respons = "no chars";
+    } else {
+      characters.forEach(async (chara) => {
+        const pairing = await prisma.pairing.create({
+          data: {
+            name: chara.firstName + character.firstName,
+            characterOneId: chara.id,
+            characterTwoId: character.id,
+            chartId: response.chartId,
+          },
+        });
       });
-    });
-    return NextResponse.json({ character }, { status: 200 });
+    }
+    return NextResponse.json({ character, respons }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
