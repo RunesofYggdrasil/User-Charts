@@ -36,7 +36,7 @@ function handleSubmitGatherVotes(
   const votes: Vote[] = [];
   for (let i = 0; i < values.length; i++) {
     for (let j = 0; j < values[i].length; j++) {
-      const [reltype, setReltype] = values[i][j];
+      const reltype = values[i][j][0];
       const vote: Vote = {
         reltype,
         characterOneId: characters[i].id,
@@ -112,9 +112,9 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
           type="submit"
           onClick={() => {
             const votes = handleSubmitGatherVotes(tableButtons, characters);
+            const postVoteBody = JSON.stringify({ votes });
             useEffect(() => {
               const postVoteCall = async () => {
-                const postVoteBody = JSON.stringify({ votes });
                 const postVoteRequest = await fetchAPI(
                   "PUT",
                   "votes",
