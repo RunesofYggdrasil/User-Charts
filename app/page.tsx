@@ -1,17 +1,21 @@
 "use server";
 
+import { Suspense } from "react";
 import fetchAPI from "./api/fetch";
 import RelTable from "./components/RelTable";
+import Loading from "./components/Loading";
 
 export default async function Home() {
   const getCharactersRequest = await fetchAPI("GET", "characters/chart/1", "");
   const getReltypesRequest = await fetchAPI("GET", "rel_types/chart/1", "");
   return (
     <>
-      <RelTable
-        characters={getCharactersRequest.characters}
-        reltypes={getReltypesRequest.relTypes}
-      />
+      <Suspense fallback={<Loading />}>
+        <RelTable
+          characters={getCharactersRequest.characters}
+          reltypes={getReltypesRequest.relTypes}
+        />
+      </Suspense>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sed
         aliquam rem ipsa incidunt assumenda nemo ad ullam numquam delectus iusto
