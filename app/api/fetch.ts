@@ -17,6 +17,7 @@ export default async function fetchAPI(
           "Content-Type": "application/json",
         },
         body: fetchBody,
+        cache: "no-store",
       });
       const data = await response.json();
       return data;
