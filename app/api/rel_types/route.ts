@@ -28,15 +28,17 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-    pairings.forEach(async (pairing) => {
-      const relValuesForPairing = await prisma.relValuesForPairings.create({
-        data: {
-          value: 0,
-          pairingId: pairing.id,
-          reltypeId: relType.id,
-        },
+    if (pairings.length > 0) {
+      pairings.forEach(async (pairing) => {
+        const relValuesForPairing = await prisma.relValuesForPairings.create({
+          data: {
+            value: 0,
+            pairingId: pairing.id,
+            reltypeId: relType.id,
+          },
+        });
       });
-    });
+    }
     return NextResponse.json({ relType }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });

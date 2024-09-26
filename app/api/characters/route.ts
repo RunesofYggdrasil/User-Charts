@@ -27,11 +27,7 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-
-    let respons = "";
-    if (!characters) {
-      respons = "no chars";
-    } else {
+    if (characters.length > 0) {
       characters.forEach(async (chara) => {
         const pairing = await prisma.pairing.create({
           data: {
@@ -43,7 +39,7 @@ export async function POST(request: NextRequest) {
         });
       });
     }
-    return NextResponse.json({ character, respons }, { status: 200 });
+    return NextResponse.json({ character }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
