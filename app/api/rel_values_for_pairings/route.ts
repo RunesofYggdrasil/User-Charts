@@ -3,8 +3,8 @@ import prisma from "@/prisma/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const relValuesForPairingss = await prisma.relValuesForPairings.findMany();
-    return NextResponse.json({ relValuesForPairingss }, { status: 200 });
+    const relValuesForPairings = await prisma.relValuesForPairings.findMany();
+    return NextResponse.json({ relValuesForPairings }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error }, { status: 400 });
