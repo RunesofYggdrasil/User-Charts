@@ -40,8 +40,11 @@ export async function POST(request: NextRequest) {
       });
       pairings.push(pairing);
     });
-    console.log(pairings);
-    return NextResponse.json({ character, pairings }, { status: 200 });
+    const complete = pairings.length > 0;
+    return NextResponse.json(
+      { character, pairings, complete },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
