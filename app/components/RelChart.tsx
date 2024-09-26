@@ -1,8 +1,9 @@
 "use server";
 
-import React from "react";
+import React, { Suspense } from "react";
 import fetchAPI from "../api/fetch";
 import RelTable from "./RelTable";
+import Loading from "./Loading";
 
 interface RelChartProps {
   chartId: number;
@@ -20,10 +21,12 @@ const RelChart = async ({ chartId }: RelChartProps) => {
     ""
   );
   return (
-    <RelTable
-      characters={getCharactersRequest.characters}
-      reltypes={getReltypesRequest.relTypes}
-    />
+    <Suspense fallback={<Loading />}>
+      <RelTable
+        characters={getCharactersRequest.characters}
+        reltypes={getReltypesRequest.relTypes}
+      />
+    </Suspense>
   );
 };
 

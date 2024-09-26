@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import RelChart from "./components/RelChart";
-import Loading from "./Loading";
+import Loading from "./components/Loading";
 
 export default async function Home() {
   return (
