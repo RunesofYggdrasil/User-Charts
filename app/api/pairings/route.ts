@@ -30,18 +30,24 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-    relTypes.forEach(async (relType) => {
-      const relValuesForPairing = await prisma.relValuesForPairings.create({
-        data: {
-          value: 0,
-          pairingId: pairing.id,
-          reltypeId: relType.id,
-        },
+    const relValuesForPairingsCompletion = new Promise((resolve) => {
+      relTypes.forEach(async (relType, index, array) => {
+        const relValuesForPairing = await prisma.relValuesForPairings.create({
+          data: {
+            value: 0,
+            pairingId: pairing.id,
+            reltypeId: relType.id,
+          },
+        });
+        relValuesForPairings.push(relValuesForPairing);
+        if (index == array.length - 1) {
+          resolve(true);
+        }
       });
-      relValuesForPairings.push(relValuesForPairing);
     });
+    const complete = await relValuesForPairingsCompletion;
     return NextResponse.json(
-      { pairing, relValuesForPairings },
+      { pairing, relValuesForPairings, complete },
       { status: 200 }
     );
   } catch (error) {
