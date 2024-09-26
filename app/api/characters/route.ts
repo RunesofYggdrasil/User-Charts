@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prisma";
+import { Pairing } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const pairings: Pairing[] = [];
     const characters = await prisma.character.findMany({
       where: {
         chartId: response.chartId,
@@ -36,8 +38,9 @@ export async function POST(request: NextRequest) {
           chartId: response.chartId,
         },
       });
+      pairings.push(pairing);
     });
-    return NextResponse.json({ character }, { status: 200 });
+    return NextResponse.json({ character, pairings }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }

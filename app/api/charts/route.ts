@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         chartId: chart.id,
       },
     });
-    return NextResponse.json({ chart }, { status: 200 });
+    return NextResponse.json({ chart, relType }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
