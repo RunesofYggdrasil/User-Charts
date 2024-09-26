@@ -6,24 +6,11 @@ import RelTable from "./components/RelTable";
 export default async function Home() {
   const getCharactersRequest = await fetchAPI("GET", "characters/chart/1", "");
   const getReltypesRequest = await fetchAPI("GET", "rel_types/chart/1", "");
-  console.log(getCharactersRequest);
-  console.log(JSON.stringify(getCharactersRequest));
-  console.log(getReltypesRequest);
-  console.log(JSON.stringify(getReltypesRequest));
   return (
     <>
       <RelTable
-        characters={[
-          { id: 0, firstName: "John", lastName: "Egbert" },
-          { id: 1, firstName: "Jade", lastName: "Harley" },
-          { id: 3, firstName: "Dave", lastName: "Strider" },
-          { id: 4, firstName: "Rose", lastName: "Lalonde" },
-        ]}
-        reltypes={[
-          { id: 0, name: "Flushed", hexCode: "FF0000", textCode: "000000" },
-          { id: 1, name: "Pitch", hexCode: "000000", textCode: "FFFFFF" },
-          { id: 3, name: "Pale", hexCode: "FF6666", textCode: "000000" },
-        ]}
+        characters={getCharactersRequest.characters}
+        reltypes={getReltypesRequest.relTypes}
       />
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sed

@@ -56,8 +56,8 @@ const RelTypeButton = ({ index, position, reltypes }: RelTypeProps) => {
         handleClick(index.currentIndex, index.setCurrentIndex, reltypes.length);
       }}
       style={{
-        ["--color-button" as any]: "#" + reltypes[index.currentIndex].hexCode,
-        ["--text-button" as any]: "#" + reltypes[index.currentIndex].textCode,
+        ["--color-button" as any]: reltypes[index.currentIndex].hexCode,
+        ["--text-button" as any]: reltypes[index.currentIndex].textCode,
       }}
     >
       {reltypes[index.currentIndex].name.substring(0, 1)}

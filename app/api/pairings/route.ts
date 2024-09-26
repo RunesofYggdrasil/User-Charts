@@ -23,17 +23,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const reltypes = await prisma.relType.findMany({
+    const relTypes = await prisma.relType.findMany({
       where: {
         chartId: response.chartId,
       },
     });
-    reltypes.forEach(async (reltype) => {
+    relTypes.forEach(async (relType) => {
       const relValuesForPairing = await prisma.relValuesForPairings.create({
         data: {
           value: 0,
           pairingId: pairing.id,
-          reltypeId: reltype.id,
+          reltypeId: relType.id,
         },
       });
     });

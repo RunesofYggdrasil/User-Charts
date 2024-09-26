@@ -21,6 +21,14 @@ export async function POST(request: NextRequest) {
         chartType: response.chartType,
       },
     });
+    const relType = await prisma.relType.create({
+      data: {
+        name: "None",
+        hexCode: "#888888",
+        textCode: "#000000",
+        chartId: response.chartId,
+      },
+    });
     return NextResponse.json({ chart }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
