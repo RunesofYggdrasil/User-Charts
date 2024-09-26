@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       data: {
         firstName: response.firstName,
         lastName: response.lastName,
-        chartId: response.chartId,
+        chartId: Number.parseInt(response.chartId),
       },
     });
 
