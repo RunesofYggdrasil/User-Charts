@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-    const complete = new Promise((resolve) => {
+    const pairingsCompletion = new Promise((resolve) => {
       characters.forEach(async (chara, index, array) => {
         const pairing = await prisma.pairing.create({
           data: {
@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
         }
       });
     });
+    const complete = await pairingsCompletion;
     return NextResponse.json(
       { character, pairings, complete },
       { status: 200 }
