@@ -40,40 +40,39 @@ function handleSortRelValuesForPairings(
 }
 
 const RelData = async ({ chartId }: RelDataProps) => {
-  //   const getPairingsRequest = await fetchAPI(
-  //     "GET",
-  //     "pairings/chart/" + chartId,
-  //     ""
-  //   );
-  //   const getRelTypesRequest = await fetchAPI(
-  //     "GET",
-  //     "rel_types/chart/" + chartId,
-  //     ""
-  //   );
-  //   const relValues: { hex: string; count: number }[][] = [];
-  //   getPairingsRequest.pairings.forEach(async (pairing: Pairing) => {
-  //     const getRelValuesForPairingRequest = await fetchAPI(
-  //       "GET",
-  //       "rel_values_for_pairings/pairing/" + pairing.id,
-  //       ""
-  //     );
-  //     const relValuesForPairing: { hex: string; count: number }[] =
-  //       handleSortRelValuesForPairings(
-  //         getRelTypesRequest.relTypes,
-  //         getRelValuesForPairingRequest.relValuesForPairing
-  //       );
-  //     relValues.push(relValuesForPairing);
-  //   });
-  //   return (
-  //     <Suspense fallback={<Loading />}>
-  //       <div>
-  //         {relValues.map((relValue, index) => {
-  //           return <DataBar key={index} values={relValue} />;
-  //         })}
-  //       </div>
-  //     </Suspense>
-  //   );
-  return <div></div>;
+  const getPairingsRequest = await fetchAPI(
+    "GET",
+    "pairings/chart/" + chartId,
+    ""
+  );
+  const getRelTypesRequest = await fetchAPI(
+    "GET",
+    "rel_types/chart/" + chartId,
+    ""
+  );
+  const relValues: { hex: string; count: number }[][] = [];
+  getPairingsRequest.pairings.forEach(async (pairing: Pairing) => {
+    const getRelValuesForPairingRequest = await fetchAPI(
+      "GET",
+      "rel_values_for_pairings/pairing/" + pairing.id,
+      ""
+    );
+    const relValuesForPairing: { hex: string; count: number }[] =
+      handleSortRelValuesForPairings(
+        getRelTypesRequest.relTypes,
+        getRelValuesForPairingRequest.relValuesForPairing
+      );
+    relValues.push(relValuesForPairing);
+  });
+  return (
+    <Suspense fallback={<Loading />}>
+      <div>
+        {relValues.map((relValue, index) => {
+          return <DataBar key={index} values={relValue} />;
+        })}
+      </div>
+    </Suspense>
+  );
 };
 
 export default RelData;
