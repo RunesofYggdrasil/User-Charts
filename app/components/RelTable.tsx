@@ -1,8 +1,7 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useState } from "react";
 import RelTypeButton from "./RelTypeButton";
-import fetchAPI from "../api/fetch";
 import Loading from "./Loading";
 import { handleSubmit } from "@/lib/actions";
 

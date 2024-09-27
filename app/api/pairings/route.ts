@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
         chartId: response.chartId,
       },
     });
-    const relValuesForPairingsCompletion = new Promise((resolve) => {
-      relTypes.forEach(async (relType, index, array) => {
+    const relValuesForPairingsCompletion = new Promise(async (resolve) => {
+      for (const relType of relTypes) {
         const relValuesForPairing = await prisma.relValuesForPairings.create({
           data: {
             value: 0,
@@ -40,10 +40,8 @@ export async function POST(request: NextRequest) {
             reltypeId: relType.id,
           },
         });
-        if (index == array.length - 1) {
-          resolve(true);
-        }
-      });
+      }
+      resolve(true);
     });
     const complete = await relValuesForPairingsCompletion;
     return NextResponse.json({ pairing, complete }, { status: 200 });

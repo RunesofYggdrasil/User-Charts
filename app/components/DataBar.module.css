@@ -1,0 +1,13 @@
+.dataBar {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+.dataBarChart {
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  height: 40px;
+  width: 100px;
+  background-color: var(--color-accent);
+}

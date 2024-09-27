@@ -3,7 +3,7 @@
 import React, { Suspense } from "react";
 import DataBar from "./DataBar";
 import fetchAPI from "../api/fetch";
-import { Pairing, RelType, RelValuesForPairings } from "@prisma/client";
+import { Character, Pairing, RelValuesForPairings } from "@prisma/client";
 import Loading from "./Loading";
 
 interface RelDataProps {
@@ -13,6 +13,12 @@ interface RelDataProps {
 type value = {
   hex: string;
   count: number;
+};
+
+type pair = {
+  characterOne: Character;
+  characterTwo: Character;
+  values: value[];
 };
 
 async function handleSortRelValuesForPairings(
@@ -58,7 +64,7 @@ const RelData = async ({ chartId }: RelDataProps) => {
     ""
   );
   const pairings: Pairing[] = getPairingsRequest.pairings;
-  const relValues: value[][] = [];
+  const relValues: pair[] = [];
   const relValuesCompletion = new Promise((resolve) => {
     pairings.forEach(async (pairing, index, array) => {
       const getRelValuesForPairingRequest = await fetchAPI(
@@ -66,23 +72,66 @@ const RelData = async ({ chartId }: RelDataProps) => {
         "rel_values_for_pairings/pairing/" + pairing.id,
         ""
       );
-      const relValuesForPairing: { hex: string; count: number }[] =
-        await handleSortRelValuesForPairings(
-          getRelValuesForPairingRequest.relValuesForPairing
-        );
-      relValues.push(relValuesForPairing);
+      const getCharacterOneRequest = await fetchAPI(
+        "GET",
+        "characters/" + pairing.characterOneId,
+        ""
+      );
+      const getCharacterTwoRequest = await fetchAPI(
+        "GET",
+        "characters/" + pairing.characterTwoId,
+        ""
+      );
+      const relValuesForPairing: value[] = await handleSortRelValuesForPairings(
+        getRelValuesForPairingRequest.relValuesForPairing
+      );
+      const pair: pair = {
+        characterOne: getCharacterOneRequest.character,
+        characterTwo: getCharacterTwoRequest.character,
+        values: relValuesForPairing,
+      };
+      relValues.push(pair);
       if (index == array.length - 1) {
         resolve(true);
       }
     });
   });
-  const complete = await relValuesCompletion;
+  const relValuesSortCompletion = new Promise(async (resolve) => {
+    const innerComplete = await relValuesCompletion;
+    if (innerComplete) {
+      relValues.sort((pairOne, pairTwo) => {
+        if (pairOne.characterOne.id > pairTwo.characterOne.id) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      relValues.sort((pairOne, pairTwo) => {
+        if (pairOne.characterTwo.id < pairTwo.characterTwo.id) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      relValues.sort((pairOne, pairTwo) => {
+        if (pairOne.characterOne.id > pairTwo.characterOne.id) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      resolve(true);
+    } else {
+      resolve(false);
+    }
+  });
+  const complete = await relValuesSortCompletion;
   if (complete) {
     return (
       <Suspense fallback={<Loading />}>
         <div>
           {relValues.map((relValue, index) => {
-            return <DataBar key={index} values={relValue} />;
+            return <DataBar key={index} pair={relValue} />;
           })}
         </div>
       </Suspense>

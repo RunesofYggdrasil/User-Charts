@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
       },
     });
     let innerComplete = true;
-    const pairingsCompletion = new Promise((resolve) => {
-      characters.forEach(async (chara, index, array) => {
+    const pairingsCompletion = new Promise(async (resolve) => {
+      for (const chara of characters) {
         const pairing = await prisma.pairing.create({
           data: {
             name: chara.firstName + character.firstName,
@@ -47,8 +47,8 @@ export async function POST(request: NextRequest) {
           },
         });
         const relValuesForPairingsCompletion: Promise<boolean> = new Promise(
-          (resolve) => {
-            relTypes.forEach(async (relType, reldex, relray) => {
+          async (resolve) => {
+            for (const relType of relTypes) {
               const relValuesForPairing =
                 await prisma.relValuesForPairings.create({
                   data: {
@@ -57,17 +57,13 @@ export async function POST(request: NextRequest) {
                     reltypeId: relType.id,
                   },
                 });
-              if (reldex == relray.length - 1) {
-                resolve(true);
-              }
-            });
+            }
+            resolve(true);
           }
         );
         innerComplete = innerComplete && (await relValuesForPairingsCompletion);
-        if (index == array.length - 1) {
-          resolve(innerComplete);
-        }
-      });
+      }
+      resolve(innerComplete);
     });
     const complete = await pairingsCompletion;
     return NextResponse.json({ character, complete }, { status: 200 });
