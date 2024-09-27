@@ -5,6 +5,7 @@ import DataBar from "./DataBar";
 import fetchAPI from "../api/fetch";
 import { Character, Pairing, RelValuesForPairings } from "@prisma/client";
 import Loading from "./Loading";
+import styles from "./RelData.module.css";
 
 interface RelDataProps {
   chartId: number;
@@ -130,7 +131,7 @@ const RelData = async ({ chartId }: RelDataProps) => {
   if (complete) {
     return (
       <Suspense fallback={<Loading />}>
-        <div>
+        <div className={styles.dataGrid}>
           {relValues.map((relValue, index) => {
             return <DataBar key={index} pair={relValue} />;
           })}

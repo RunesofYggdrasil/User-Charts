@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: row;
   margin: auto;
-  margin-bottom: 10px;
 }
 .dataBarChart {
   display: flex;

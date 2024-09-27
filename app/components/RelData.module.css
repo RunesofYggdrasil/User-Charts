@@ -1,0 +1,8 @@
+.dataGrid {
+  display: grid;
+  width: var(--page-width);
+  gap: 5px;
+  grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+  grid-auto-rows: 40px;
+  grid-auto-flow: row;
+}
