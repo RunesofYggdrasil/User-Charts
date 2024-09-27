@@ -33,7 +33,7 @@ async function handleSortRelValuesForPairings(
   });
   const values: value[] = [];
   const relValuesCompletion = new Promise(async (resolve) => {
-    if (relValuesForPairing.length > 0) {
+    if (relValuesForPairing && relValuesForPairing.length > 0) {
       for (const relValue of relValuesForPairing) {
         const getRelTypeRequest = await fetchAPI(
           "GET",
@@ -66,7 +66,7 @@ const RelData = async ({ chartId }: RelDataProps) => {
   const pairings: Pairing[] = getPairingsRequest.pairings;
   const relValues: pair[] = [];
   const relValuesCompletion = new Promise(async (resolve) => {
-    if (pairings.length > 0) {
+    if (pairings && pairings.length > 0) {
       for (const pairing of pairings) {
         const getRelValuesForPairingRequest = await fetchAPI(
           "GET",
