@@ -57,12 +57,12 @@ const RelData = async ({ chartId }: RelDataProps) => {
       "rel_values_for_pairings/pairing/" + pairing.id,
       ""
     );
-    const relValuesForPairing: { hex: string; count: number }[] =
-      handleSortRelValuesForPairings(
-        getRelTypesRequest.relTypes,
-        getRelValuesForPairingRequest.relValuesForPairing
-      );
-    relValues.push(relValuesForPairing);
+    // const relValuesForPairing: { hex: string; count: number }[] =
+    //   handleSortRelValuesForPairings(
+    //     getRelTypesRequest.relTypes,
+    //     getRelValuesForPairingRequest.relValuesForPairing
+    //   );
+    // relValues.push(relValuesForPairing);
   });
   return (
     <Suspense fallback={<Loading />}>
