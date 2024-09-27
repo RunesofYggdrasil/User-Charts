@@ -32,6 +32,9 @@ export async function POST(request: NextRequest) {
     });
     const relTypes = await prisma.relType.findMany({
       where: {
+        NOT: {
+          name: "None",
+        },
         chartId: response.chartId,
       },
     });

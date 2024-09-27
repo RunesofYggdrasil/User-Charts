@@ -27,6 +27,9 @@ export async function POST(request: NextRequest) {
     const relValuesForPairings: RelValuesForPairings[] = [];
     const relTypes = await prisma.relType.findMany({
       where: {
+        NOT: {
+          name: "None",
+        },
         chartId: response.chartId,
       },
     });
