@@ -7,13 +7,13 @@ export async function GET(
 ) {
   try {
     const id = Number.parseInt(params.id);
-    const relValuesForPairings =
+    const relValuesForPairing =
       await prisma.relValuesForPairings.findFirstOrThrow({
         where: {
           id,
         },
       });
-    return NextResponse.json({ relValuesForPairings }, { status: 200 });
+    return NextResponse.json({ relValuesForPairing }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
@@ -26,7 +26,7 @@ export async function PUT(
   try {
     const id = Number.parseInt(params.id);
     const response = await request.json();
-    const relValuesForPairings = await prisma.relValuesForPairings.update({
+    const relValuesForPairing = await prisma.relValuesForPairings.update({
       data: {
         value: 0,
         pairingId: response.pairingId,
@@ -36,7 +36,7 @@ export async function PUT(
         id,
       },
     });
-    return NextResponse.json({ relValuesForPairings }, { status: 200 });
+    return NextResponse.json({ relValuesForPairing }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
@@ -48,12 +48,12 @@ export async function DELETE(
 ) {
   try {
     const id = Number.parseInt(params.id);
-    const relValuesForPairings = await prisma.relValuesForPairings.delete({
+    const relValuesForPairing = await prisma.relValuesForPairings.delete({
       where: {
         id,
       },
     });
-    return NextResponse.json({ relValuesForPairings }, { status: 200 });
+    return NextResponse.json({ relValuesForPairing }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }

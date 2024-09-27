@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import fetchAPI from "../api/fetch";
 import RelTable from "./RelTable";
 import Loading from "./Loading";
+import RelData from "./RelData";
 
 interface RelChartProps {
   chartId: number;
@@ -26,6 +27,7 @@ const RelChart = async ({ chartId }: RelChartProps) => {
         characters={getCharactersRequest.characters}
         reltypes={getReltypesRequest.relTypes}
       />
+      <RelData chartId={chartId} />
     </Suspense>
   );
 };
