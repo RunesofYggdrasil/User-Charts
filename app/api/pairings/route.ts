@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prisma";
-import { RelValuesForPairings } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,7 +23,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const relValuesForPairings: RelValuesForPairings[] = [];
     const relTypes = await prisma.relType.findMany({
       where: {
         NOT: {
@@ -42,17 +40,13 @@ export async function POST(request: NextRequest) {
             reltypeId: relType.id,
           },
         });
-        relValuesForPairings.push(relValuesForPairing);
         if (index == array.length - 1) {
           resolve(true);
         }
       });
     });
     const complete = await relValuesForPairingsCompletion;
-    return NextResponse.json(
-      { pairing, relValuesForPairings, complete },
-      { status: 200 }
-    );
+    return NextResponse.json({ pairing, complete }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }
