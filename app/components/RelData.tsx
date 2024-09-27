@@ -10,17 +10,14 @@ interface RelDataProps {
   chartId: number;
 }
 
+type value = {
+  hex: string;
+  count: number;
+};
+
 function handleSortRelValuesForPairings(
-  relTypes: RelType[],
   relValuesForPairing: RelValuesForPairings[]
 ) {
-  relTypes.sort((relOne, relTwo) => {
-    if (relOne.id > relTwo.id) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
   relValuesForPairing.sort((relvalOne, relvalTwo) => {
     if (relvalOne.reltypeId > relvalTwo.reltypeId) {
       return 1;
@@ -28,10 +25,15 @@ function handleSortRelValuesForPairings(
       return -1;
     }
   });
-  const values: { hex: string; count: number }[] = [];
-  relValuesForPairing.forEach((relValue, index) => {
+  const values: value[] = [];
+  relValuesForPairing.forEach(async (relValue) => {
+    const getRelTypeRequest = await fetchAPI(
+      "GET",
+      "rel_types/" + relValue.reltypeId,
+      ""
+    );
     const value = {
-      hex: relTypes[index + 1].hexCode,
+      hex: getRelTypeRequest.relType.hexCode,
       count: relValue.value,
     };
     values.push(value);
@@ -45,32 +47,33 @@ const RelData = async ({ chartId }: RelDataProps) => {
     "pairings/chart/" + chartId,
     ""
   );
-  const getRelTypesRequest = await fetchAPI(
-    "GET",
-    "rel_types/chart/" + chartId,
-    ""
-  );
   const pairings: Pairing[] = getPairingsRequest.pairings;
-  const relValues: { hex: string; count: number }[][] = [];
-  for (let i = 0; i < pairings.length; i++) {
-    const getRelValuesForPairingRequest = await fetchAPI(
-      "GET",
-      "rel_values_for_pairings/pairing/" + pairings[i].id,
-      ""
-    );
-    const relValuesForPairing: { hex: string; count: number }[] =
-      handleSortRelValuesForPairings(
-        getRelTypesRequest.relTypes,
-        getRelValuesForPairingRequest.relValuesForPairing
+  const relValues: value[][] = [];
+  const relValuesCompletion = new Promise((resolve) => {
+    pairings.forEach(async (pairing, index, array) => {
+      const getRelValuesForPairingRequest = await fetchAPI(
+        "GET",
+        "rel_values_for_pairings/pairing/" + pairing.id,
+        ""
       );
-    relValues.push(relValuesForPairing);
-  }
+      const relValuesForPairing: { hex: string; count: number }[] =
+        handleSortRelValuesForPairings(
+          getRelValuesForPairingRequest.relValuesForPairing
+        );
+      relValues.push(relValuesForPairing);
+      if (index == array.length - 1) {
+        resolve(true);
+      }
+    });
+  });
+  const complete = await relValuesCompletion;
   return (
     <Suspense fallback={<Loading />}>
       <div>
-        {relValues.map((relValue, index) => {
-          return <DataBar key={index} values={relValue} />;
-        })}
+        {relValues &&
+          relValues.map((relValue, index) => {
+            return <DataBar key={index} values={relValue} />;
+          })}
       </div>
     </Suspense>
   );
