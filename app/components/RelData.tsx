@@ -32,8 +32,8 @@ async function handleSortRelValuesForPairings(
     }
   });
   const values: value[] = [];
-  const relValuesCompletion = new Promise((resolve) => {
-    relValuesForPairing.forEach(async (relValue, index, array) => {
+  const relValuesCompletion = new Promise(async (resolve) => {
+    for (const relValue of relValuesForPairing) {
       const getRelTypeRequest = await fetchAPI(
         "GET",
         "rel_types/" + relValue.reltypeId,
@@ -44,10 +44,8 @@ async function handleSortRelValuesForPairings(
         count: relValue.value,
       };
       values.push(value);
-      if (index == array.length - 1) {
-        resolve(true);
-      }
-    });
+    }
+    resolve(true);
   });
   const complete = await relValuesCompletion;
   if (complete) {
@@ -65,8 +63,8 @@ const RelData = async ({ chartId }: RelDataProps) => {
   );
   const pairings: Pairing[] = getPairingsRequest.pairings;
   const relValues: pair[] = [];
-  const relValuesCompletion = new Promise((resolve) => {
-    pairings.forEach(async (pairing, index, array) => {
+  const relValuesCompletion = new Promise(async (resolve) => {
+    for (const pairing of pairings) {
       const getRelValuesForPairingRequest = await fetchAPI(
         "GET",
         "rel_values_for_pairings/pairing/" + pairing.id,
@@ -91,10 +89,8 @@ const RelData = async ({ chartId }: RelDataProps) => {
         values: relValuesForPairing,
       };
       relValues.push(pair);
-      if (index == array.length - 1) {
-        resolve(true);
-      }
-    });
+    }
+    resolve(true);
   });
   const relValuesSortCompletion = new Promise(async (resolve) => {
     const innerComplete = await relValuesCompletion;
