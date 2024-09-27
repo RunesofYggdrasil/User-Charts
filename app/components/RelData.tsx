@@ -1,9 +1,10 @@
 "use server";
 
-import React from "react";
+import React, { Suspense } from "react";
 import DataBar from "./DataBar";
 import fetchAPI from "../api/fetch";
 import { Pairing, RelType, RelValuesForPairings } from "@prisma/client";
+import Loading from "./Loading";
 
 interface RelDataProps {
   chartId: number;
@@ -65,11 +66,13 @@ const RelData = async ({ chartId }: RelDataProps) => {
     relValues.push(relValuesForPairing);
   });
   return (
-    <div>
-      {relValues.map((relValue, index) => {
-        return <DataBar key={index} values={relValue} />;
-      })}
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div>
+        {relValues.map((relValue, index) => {
+          return <DataBar key={index} values={relValue} />;
+        })}
+      </div>
+    </Suspense>
   );
 };
 
