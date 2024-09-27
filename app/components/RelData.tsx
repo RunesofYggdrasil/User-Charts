@@ -33,17 +33,19 @@ async function handleSortRelValuesForPairings(
   });
   const values: value[] = [];
   const relValuesCompletion = new Promise(async (resolve) => {
-    for (const relValue of relValuesForPairing) {
-      const getRelTypeRequest = await fetchAPI(
-        "GET",
-        "rel_types/" + relValue.reltypeId,
-        ""
-      );
-      const value = {
-        hex: getRelTypeRequest.relType.hexCode,
-        count: relValue.value,
-      };
-      values.push(value);
+    if (relValuesForPairing.length > 0) {
+      for (const relValue of relValuesForPairing) {
+        const getRelTypeRequest = await fetchAPI(
+          "GET",
+          "rel_types/" + relValue.reltypeId,
+          ""
+        );
+        const value = {
+          hex: getRelTypeRequest.relType.hexCode,
+          count: relValue.value,
+        };
+        values.push(value);
+      }
     }
     resolve(true);
   });
@@ -61,34 +63,37 @@ const RelData = async ({ chartId }: RelDataProps) => {
     "pairings/chart/" + chartId,
     ""
   );
-  const pairings: Pairing[] = await getPairingsRequest.pairings;
+  const pairings: Pairing[] = getPairingsRequest.pairings;
   const relValues: pair[] = [];
   const relValuesCompletion = new Promise(async (resolve) => {
-    for (const pairing of pairings) {
-      const getRelValuesForPairingRequest = await fetchAPI(
-        "GET",
-        "rel_values_for_pairings/pairing/" + pairing.id,
-        ""
-      );
-      const getCharacterOneRequest = await fetchAPI(
-        "GET",
-        "characters/" + pairing.characterOneId,
-        ""
-      );
-      const getCharacterTwoRequest = await fetchAPI(
-        "GET",
-        "characters/" + pairing.characterTwoId,
-        ""
-      );
-      const relValuesForPairing: value[] = await handleSortRelValuesForPairings(
-        await getRelValuesForPairingRequest.relValuesForPairing
-      );
-      const pair: pair = {
-        characterOne: getCharacterOneRequest.character,
-        characterTwo: getCharacterTwoRequest.character,
-        values: relValuesForPairing,
-      };
-      relValues.push(pair);
+    if (pairings.length > 0) {
+      for (const pairing of pairings) {
+        const getRelValuesForPairingRequest = await fetchAPI(
+          "GET",
+          "rel_values_for_pairings/pairing/" + pairing.id,
+          ""
+        );
+        const getCharacterOneRequest = await fetchAPI(
+          "GET",
+          "characters/" + pairing.characterOneId,
+          ""
+        );
+        const getCharacterTwoRequest = await fetchAPI(
+          "GET",
+          "characters/" + pairing.characterTwoId,
+          ""
+        );
+        const relValuesForPairing: value[] =
+          await handleSortRelValuesForPairings(
+            getRelValuesForPairingRequest.relValuesForPairing
+          );
+        const pair: pair = {
+          characterOne: getCharacterOneRequest.character,
+          characterTwo: getCharacterTwoRequest.character,
+          values: relValuesForPairing,
+        };
+        relValues.push(pair);
+      }
     }
     resolve(true);
   });
