@@ -15,7 +15,7 @@ type value = {
   count: number;
 };
 
-function handleSortRelValuesForPairings(
+async function handleSortRelValuesForPairings(
   relValuesForPairing: RelValuesForPairings[]
 ) {
   relValuesForPairing.sort((relvalOne, relvalTwo) => {
@@ -26,19 +26,29 @@ function handleSortRelValuesForPairings(
     }
   });
   const values: value[] = [];
-  relValuesForPairing.forEach(async (relValue) => {
-    const getRelTypeRequest = await fetchAPI(
-      "GET",
-      "rel_types/" + relValue.reltypeId,
-      ""
-    );
-    const value = {
-      hex: getRelTypeRequest.relType.hexCode,
-      count: relValue.value,
-    };
-    values.push(value);
+  const relValuesCompletion = new Promise((resolve) => {
+    relValuesForPairing.forEach(async (relValue, index, array) => {
+      const getRelTypeRequest = await fetchAPI(
+        "GET",
+        "rel_types/" + relValue.reltypeId,
+        ""
+      );
+      const value = {
+        hex: getRelTypeRequest.relType.hexCode,
+        count: relValue.value,
+      };
+      values.push(value);
+      if (index == array.length - 1) {
+        resolve(true);
+      }
+    });
   });
-  return values;
+  const complete = await relValuesCompletion;
+  if (complete) {
+    return values;
+  } else {
+    return [];
+  }
 }
 
 const RelData = async ({ chartId }: RelDataProps) => {
@@ -57,7 +67,7 @@ const RelData = async ({ chartId }: RelDataProps) => {
         ""
       );
       const relValuesForPairing: { hex: string; count: number }[] =
-        handleSortRelValuesForPairings(
+        await handleSortRelValuesForPairings(
           getRelValuesForPairingRequest.relValuesForPairing
         );
       relValues.push(relValuesForPairing);
@@ -67,16 +77,19 @@ const RelData = async ({ chartId }: RelDataProps) => {
     });
   });
   const complete = await relValuesCompletion;
-  return (
-    <Suspense fallback={<Loading />}>
-      <div>
-        {relValues &&
-          relValues.map((relValue, index) => {
+  if (complete) {
+    return (
+      <Suspense fallback={<Loading />}>
+        <div>
+          {relValues.map((relValue, index) => {
             return <DataBar key={index} values={relValue} />;
           })}
-      </div>
-    </Suspense>
-  );
+        </div>
+      </Suspense>
+    );
+  } else {
+    return <Loading />;
+  }
 };
 
 export default RelData;
