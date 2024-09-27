@@ -52,19 +52,19 @@ const RelData = async ({ chartId }: RelDataProps) => {
   );
   const pairings: Pairing[] = getPairingsRequest.pairings;
   const relValues: { hex: string; count: number }[][] = [];
-  pairings.forEach(async (pairing) => {
+  for (let i = 0; i < pairings.length; i++) {
     const getRelValuesForPairingRequest = await fetchAPI(
       "GET",
-      "rel_values_for_pairings/pairing/" + pairing.id,
+      "rel_values_for_pairings/pairing/" + pairings[i].id,
       ""
     );
-    // const relValuesForPairing: { hex: string; count: number }[] =
-    //   handleSortRelValuesForPairings(
-    //     getRelTypesRequest.relTypes,
-    //     getRelValuesForPairingRequest.relValuesForPairing
-    //   );
-    // relValues.push(relValuesForPairing);
-  });
+    const relValuesForPairing: { hex: string; count: number }[] =
+      handleSortRelValuesForPairings(
+        getRelTypesRequest.relTypes,
+        getRelValuesForPairingRequest.relValuesForPairing
+      );
+    relValues.push(relValuesForPairing);
+  }
   return (
     <Suspense fallback={<Loading />}>
       <div>
