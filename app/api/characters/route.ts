@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prisma";
-import { Pairing } from "@prisma/client";
+import { Pairing, RelValuesForPairings } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,11 +24,18 @@ export async function POST(request: NextRequest) {
     });
 
     const pairings: Pairing[] = [];
+    const relValuesForPairings: RelValuesForPairings[] = [];
     const characters = await prisma.character.findMany({
       where: {
         chartId: response.chartId,
       },
     });
+    const relTypes = await prisma.relType.findMany({
+      where: {
+        chartId: response.chartId,
+      },
+    });
+    let innerComplete = true;
     const pairingsCompletion = new Promise((resolve) => {
       characters.forEach(async (chara, index, array) => {
         const pairing = await prisma.pairing.create({
@@ -39,9 +46,28 @@ export async function POST(request: NextRequest) {
             chartId: response.chartId,
           },
         });
+        const relValuesForPairingsCompletion: Promise<boolean> = new Promise(
+          (resolve) => {
+            relTypes.forEach(async (relType, reldex, relray) => {
+              const relValuesForPairing =
+                await prisma.relValuesForPairings.create({
+                  data: {
+                    value: 0,
+                    pairingId: pairing.id,
+                    reltypeId: relType.id,
+                  },
+                });
+              relValuesForPairings.push(relValuesForPairing);
+              if (reldex == relray.length - 1) {
+                resolve(true);
+              }
+            });
+          }
+        );
+        innerComplete = innerComplete && (await relValuesForPairingsCompletion);
         pairings.push(pairing);
         if (index == array.length - 1) {
-          resolve(true);
+          resolve(innerComplete);
         }
       });
     });
