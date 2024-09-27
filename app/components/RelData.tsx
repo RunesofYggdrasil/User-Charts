@@ -66,8 +66,8 @@ const RelData = async ({ chartId }: RelDataProps) => {
   });
   return (
     <div>
-      {relValues.map((relValue) => {
-        return <DataBar values={relValue} />;
+      {relValues.map((relValue, index) => {
+        return <DataBar key={index} values={relValue} />;
       })}
     </div>
   );
