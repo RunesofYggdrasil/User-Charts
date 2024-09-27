@@ -61,7 +61,7 @@ const RelData = async ({ chartId }: RelDataProps) => {
     "pairings/chart/" + chartId,
     ""
   );
-  const pairings: Pairing[] = getPairingsRequest.pairings;
+  const pairings: Pairing[] = await getPairingsRequest.pairings;
   const relValues: pair[] = [];
   const relValuesCompletion = new Promise(async (resolve) => {
     for (const pairing of pairings) {
@@ -81,7 +81,7 @@ const RelData = async ({ chartId }: RelDataProps) => {
         ""
       );
       const relValuesForPairing: value[] = await handleSortRelValuesForPairings(
-        getRelValuesForPairingRequest.relValuesForPairing
+        await getRelValuesForPairingRequest.relValuesForPairing
       );
       const pair: pair = {
         characterOne: getCharacterOneRequest.character,
