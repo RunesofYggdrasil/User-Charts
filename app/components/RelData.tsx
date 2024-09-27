@@ -50,8 +50,9 @@ const RelData = async ({ chartId }: RelDataProps) => {
     "rel_types/chart/" + chartId,
     ""
   );
+  const pairings: Pairing[] = getPairingsRequest.pairings;
   const relValues: { hex: string; count: number }[][] = [];
-  getPairingsRequest.pairings.forEach(async (pairing: Pairing) => {
+  pairings.forEach(async (pairing) => {
     const getRelValuesForPairingRequest = await fetchAPI(
       "GET",
       "rel_values_for_pairings/pairing/" + pairing.id,
