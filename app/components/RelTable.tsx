@@ -5,8 +5,6 @@ import RelTypeButton from "./RelTypeButton";
 import Loading from "./Loading";
 import { handleSubmit } from "@/lib/actions";
 import RelLegend from "./RelLegend";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface RelTableProps {
   characters:
@@ -52,28 +50,7 @@ function handleSubmitGatherVotes(
   return votes;
 }
 
-function onSubmit(
-  tableButtons: [number, React.Dispatch<React.SetStateAction<number>>][][],
-  reltypes: { id: number; name: string; hexCode: string; textCode: string }[],
-  characters: { id: number; firstName: string; lastName: string }[],
-  setPostVoteBody: React.Dispatch<React.SetStateAction<string>>,
-  router: AppRouterInstance,
-  pathname: string,
-  setIsChartVisible: React.Dispatch<React.SetStateAction<boolean>>
-) {
-  setIsChartVisible(false);
-  const votes = handleSubmitGatherVotes(tableButtons, reltypes, characters);
-  setPostVoteBody(JSON.stringify({ votes }));
-  router.push(pathname + "?view=read-only");
-}
-
 const RelTable = ({ characters, reltypes }: RelTableProps) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const view = searchParams.get("view");
-  const [isChartVisible, setIsChartVisible] = useState(view != "read-only");
-
   if (characters && reltypes) {
     const tableButtons: [
       number,
@@ -91,77 +68,67 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
     return (
       <>
         <RelLegend reltypes={reltypes} />
-        {isChartVisible && (
-          <form action={handleSubmit}>
-            <table>
-              <tbody>
-                <tr>
-                  <th>CROWSEE</th>
-                  {characters.map((character) => {
-                    return (
-                      <th key={"h" + character.id}>
-                        {character.firstName}{" "}
-                        {character.lastName.substring(0, 1)}.
-                      </th>
-                    );
-                  })}
-                </tr>
-                {characters.map((characterTwo, indexTwo) => {
+        <form action={handleSubmit}>
+          <table>
+            <tbody>
+              <tr>
+                <th>CROWSEE</th>
+                {characters.map((character) => {
                   return (
-                    <tr key={"r" + characterTwo.id}>
-                      <th>
-                        {characterTwo.firstName}{" "}
-                        {characterTwo.lastName.substring(0, 1)}.
-                      </th>
-                      {characters.map((characterOne, indexOne) => {
-                        const [currentIndex, setCurrentIndex] =
-                          indexOne >= indexTwo
-                            ? tableButtons[indexTwo][indexOne - indexTwo]
-                            : tableButtons[indexOne][indexTwo - indexOne];
-                        return (
-                          <td key={"d" + characterOne.id}>
-                            <RelTypeButton
-                              index={{ currentIndex, setCurrentIndex }}
-                              position={{
-                                x: indexOne,
-                                y: indexTwo,
-                                id1: characterOne.id,
-                                id2: characterTwo.id,
-                              }}
-                              reltypes={reltypes}
-                            />
-                          </td>
-                        );
-                      })}
-                    </tr>
+                    <th key={"h" + character.id}>
+                      {character.firstName} {character.lastName.substring(0, 1)}
+                      .
+                    </th>
                   );
                 })}
-              </tbody>
-            </table>
-            <input type="hidden" value={postVoteBody} name="postVoteBody" />
-            <button
-              type="submit"
-              onClick={() => {
-                onSubmit(
-                  tableButtons,
-                  reltypes,
-                  characters,
-                  setPostVoteBody,
-                  router,
-                  pathname,
-                  setIsChartVisible
+              </tr>
+              {characters.map((characterTwo, indexTwo) => {
+                return (
+                  <tr key={"r" + characterTwo.id}>
+                    <th>
+                      {characterTwo.firstName}{" "}
+                      {characterTwo.lastName.substring(0, 1)}.
+                    </th>
+                    {characters.map((characterOne, indexOne) => {
+                      const [currentIndex, setCurrentIndex] =
+                        indexOne >= indexTwo
+                          ? tableButtons[indexTwo][indexOne - indexTwo]
+                          : tableButtons[indexOne][indexTwo - indexOne];
+                      return (
+                        <td key={"d" + characterOne.id}>
+                          <RelTypeButton
+                            index={{ currentIndex, setCurrentIndex }}
+                            position={{
+                              x: indexOne,
+                              y: indexTwo,
+                              id1: characterOne.id,
+                              id2: characterTwo.id,
+                            }}
+                            reltypes={reltypes}
+                          />
+                        </td>
+                      );
+                    })}
+                  </tr>
                 );
-              }}
-            >
-              SUBMIT
-            </button>
-          </form>
-        )}
-        {!isChartVisible && (
-          <div>
-            <p>You have already voted.</p>
-          </div>
-        )}
+              })}
+            </tbody>
+          </table>
+          <input type="hidden" value={postVoteBody} name="postVoteBody" />
+          <button
+            type="submit"
+            onClick={() => {
+              const votes = handleSubmitGatherVotes(
+                tableButtons,
+                reltypes,
+                characters
+              );
+              setPostVoteBody(JSON.stringify({ votes }));
+            }}
+          >
+            SUBMIT
+          </button>
+        </form>
       </>
     );
   } else {
