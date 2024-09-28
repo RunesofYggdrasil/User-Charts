@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import RelTypeButton from "./RelTypeButton";
 import Loading from "./Loading";
 import { handleSubmit } from "@/lib/actions";
+import RelLegend from "./RelLegend";
 
 interface RelTableProps {
   characters:
@@ -66,6 +67,7 @@ const RelTable = ({ characters, reltypes }: RelTableProps) => {
     const [postVoteBody, setPostVoteBody] = useState("");
     return (
       <>
+        <RelLegend reltypes={reltypes} />
         <form action={handleSubmit}>
           <table>
             <tbody>
