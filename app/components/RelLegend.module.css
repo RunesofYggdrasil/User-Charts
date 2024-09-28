@@ -17,6 +17,11 @@
   margin-top: 8px;
   flex-direction: row;
 }
+.legendTitle {
+  width: 80px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
 .legendButton {
   display: flex;
 

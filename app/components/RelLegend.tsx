@@ -27,7 +27,7 @@ const RelLegend = ({ reltypes }: RelLegendProps) => {
               >
                 {reltype.name.substring(0, 1)}
               </div>
-              {reltype.name}
+              <p className={styles.legendTitle}>{reltype.name}</p>
             </div>
           </div>
         );
