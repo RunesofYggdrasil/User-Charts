@@ -6,7 +6,7 @@ export default async function Home() {
   return (
     <>
       <Suspense fallback={<Loading />}>
-        <RelChart chartId={5} />
+        <RelChart chartId={7} />
       </Suspense>
       <p>hi</p>
     </>
